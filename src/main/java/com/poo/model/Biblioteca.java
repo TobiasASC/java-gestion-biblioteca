@@ -1,3 +1,5 @@
+package com.poo.model;
+
 import java.util.*;
 
 /**

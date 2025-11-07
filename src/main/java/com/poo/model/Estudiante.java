@@ -1,9 +1,9 @@
+package com.poo.model;
 import java.io.Serializable;
 
 /**
  * Representa un estudiante, con sus atributos DNI, nombre, días de préstamo, préstamo y carrera.
  *
- * @author Lucas Kruzolek
  * @version 07.11.2025
  */
 public class Estudiante extends Socio implements Serializable {
