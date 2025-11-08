@@ -167,7 +167,25 @@ public class Biblioteca {
         return prestamosVencidos;
         
     }
-
     
+    /**
+     * Devuelve el nombre del socio que posee un libro en especifico
+     * 
+     * @param p_libro libro que se desea conocer su ubicacion
+     * @return (true) nombre del socio que posee el libro / (false) el libro esta en la biblioteca
+     */
+    public String quienTieneElLibro(Libro p_libro) throws LibroNoPrestadoException {
+
+        if (p_libro.prestado()) {
+
+            return p_libro.getPrestamo().getSocio().getNombre();
+        
+        } else {
+
+            throw new LibroNoPrestadoException("El libro '" + p_libro.getTitulo() + "' se encuentra en la biblioteca\n");
+        
+        }
+    
+    }
     
 }
