@@ -32,14 +32,12 @@ public class Libro {
         this.setPrestamos(new ArrayList<>());
     }
 
-    // --- Setters ---
     private void setTitulo(String p_titulo) { this.titulo = p_titulo; }
     private void setEdicion(int p_edicion) { this.edicion = p_edicion; }
     private void setEditorial(String p_editorial) { this.editorial = p_editorial; }
     private void setAnio(int p_anio) { this.anio = p_anio; }
     private void setPrestamos(ArrayList<Prestamo> p_prestamos) { this.prestamos = p_prestamos; }
 
-    // --- Getters ---
     public String getTitulo() { return this.titulo; }
     public int getEdicion() { return this.edicion; }
     public String getEditorial() { return this.editorial; }

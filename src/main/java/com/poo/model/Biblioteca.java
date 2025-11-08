@@ -167,7 +167,104 @@ public class Biblioteca {
         return prestamosVencidos;
         
     }
+
+    /**
+     * Devuelve el nombre del socio que posee un libro en especifico
+     * 
+     * @param p_libro libro que se desea conocer su ubicacion
+     * @return (true) nombre del socio que posee el libro / (false) el libro esta en la biblioteca
+     */
+    public String quienTieneElLibro(Libro p_libro) throws LibroNoPrestadoException {
+
+        if (p_libro.prestado()) {
+
+            return p_libro.getPrestamo().getSocio().getNombre();
+        
+        } else {
+
+            throw new LibroNoPrestadoException("El libro '" + p_libro.getTitulo() + "' se encuentra en la biblioteca\n");
+        
+        }
     
+    }
+
+    /**
+     * Asigna la fecha actual como fecha de devolucion
+     * (true) asigna la fecha de devolucion
+     * (false) el libro se encuentra en la bibliote
+     * 
+     * @param p_libro libro devuelto
+     */
+    public void devolverLibro(Libro p_libro) throws LibroNoPrestadoException {
+
+        if (p_libro.prestado()) {
+
+            p_libro.getPrestamo().registrarFechaDevolucion(new GregorianCalendar());
+            
+        } else {
+
+            throw new LibroNoPrestadoException("El libro '" + p_libro.getTitulo() + "' no se puede devolver ya que se encuentra en la biblioteca\n");
+        
+        }
     
+    }
+
+    /**
+     * Presta un libro a un socio
+     * 
+     * @param p_fechaRetiro dia que se realizo el prestamo del libro
+     * @param p_socio socio a quien se le presta el libro
+     * @param p_libro libro prestado
+     * 
+     * @return (true) registra el prestamo del libro / (false) retorna false 
+     */
+    public boolean prestarLibro(Calendar p_fechaRetiro, Socio p_socio, Libro p_libro) {
+
+        if (p_socio != null) {
+
+            if (p_socio.puedePedir() && !p_libro.prestado()) {
+
+                p_socio.addPrestamo(new Prestamo(p_fechaRetiro, p_socio, p_libro));
+                p_libro.addPrestamo(new Prestamo(p_fechaRetiro, p_socio, p_libro));
+                return true;
+
+            } else {
+
+                return false;
+
+            }
+
+        } else {
+
+            return false;
+
+        }
+
+    }
+
+    /**
+     * Calcula la cantidad de socios de un tipo especifico existen 
+     * 
+     * @param p_tipo es el tipo de socio que deseo contar
+     * 
+     * @return cantidad de socios del tipo solicitado
+     */
+    public int cantidadSociosPorTipo(String p_tipo){
+
+        int cantTipoSocio = 0;
+
+        for(Socio socios : this.getSocios()) {
+
+            if (socios.soyDeLaClase().equalsIgnoreCase(p_tipo)) {
+
+                cantTipoSocio++;
+
+            }
+
+        }
+
+        return cantTipoSocio;
+
+    }
     
 }
