@@ -223,6 +223,24 @@ public class Biblioteca {
 
     }
 
+     /**
+     * Calcula la cantidad de socios de un tipo especifico
+     * 
+     * @param p_tipo es el tipo de socio que se desea contar
+     * 
+     * @return cantidad de socios del tipo solicitado
+     */
+    public int cantidadSociosPorTipo(String p_tipo){
+        int cantTipoSocio = 0;
 
+        for(Socio socios : this.getSocios()) {
+            if (socios.soyDeLaClase().equalsIgnoreCase(p_tipo)) {
+                cantTipoSocio++;
+            }
+        }
+
+        return cantTipoSocio;
+
+    }
 
 }
