@@ -175,17 +175,26 @@ public class Biblioteca {
      * @return (true) nombre del socio que posee el libro / (false) el libro esta en la biblioteca
      */
     public String quienTieneElLibro(Libro p_libro) throws LibroNoPrestadoException {
-
         if (p_libro.prestado()) {
-
             return p_libro.getPrestamo().getSocio().getNombre();
-        
         } else {
-
             throw new LibroNoPrestadoException("El libro '" + p_libro.getTitulo() + "' se encuentra en la biblioteca\n");
-        
         }
-    
     }
     
+    /**
+     * Asigna la fecha actual como fecha de devolucion
+     * (true) asigna la fecha de devolucion
+     * (false) el libro se encuentra en la bibliote
+     * 
+     * @param p_libro libro devuelto
+     */
+    public void devolverLibro(Libro p_libro) throws LibroNoPrestadoException {
+        if (p_libro.prestado()) {
+            p_libro.getPrestamo().registrarFechaDevolucion(new GregorianCalendar());
+        } else {
+            throw new LibroNoPrestadoException("El libro '" + p_libro.getTitulo() + "' no se puede devolver ya que se encuentra en la biblioteca\n");
+        }
+    }
+
 }
