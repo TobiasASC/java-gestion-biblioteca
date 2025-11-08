@@ -1,9 +1,13 @@
 import java.util.*;
 
 /**
+ * Representa una biblioteca con sus respectivos libros y socios
  * 
+ * @author Tobias Cueva, Marcos Marquez, Marcos Rojas
+ * @version 1
  */
 public class Biblioteca {
+
     private String nombre;
     private ArrayList<Socio> socios;
     private ArrayList<Libro> libros;
