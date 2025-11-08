@@ -197,4 +197,32 @@ public class Biblioteca {
         }
     }
 
+    /**
+     * Presta un libro a un socio
+     * 
+     * @param p_fechaRetiro dia que se realizo el prestamo del libro
+     * @param p_socio socio a quien se le presta el libro
+     * @param p_libro libro prestado
+     * 
+     * @return (true) registra el prestamo del libro / (false) retorna false 
+     */
+    public boolean prestarLibro(Calendar p_fechaRetiro, Socio p_socio, Libro p_libro) {
+        if (p_socio != null) {
+
+            if (p_socio.puedePedir() && !p_libro.prestado()) {
+                p_socio.addPrestamo(new Prestamo(p_fechaRetiro, p_socio, p_libro));
+                p_libro.addPrestamo(new Prestamo(p_fechaRetiro, p_socio, p_libro));
+                return true;
+            } else {
+                return false;
+            }
+
+        } else {
+            return false;
+        }
+
+    }
+
+
+
 }
