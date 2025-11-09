@@ -264,6 +264,18 @@ public class Biblioteca {
     }
 
     /**
+    Lista los titulos de libros con los que cuenta la biblioteca, lo hace sin repetir elementos
+    @return un conjunto de titulos en una cadena, separada por saltos de linea
+    */
+    public String listaDeTitulos(){
+        HashSet<String> listaTitulos = new HashSet<>();//Conjunto de titulos sin repetir
+        for(Libro libro: this.getLibros()){
+            listaTitulos.add(libro.getTitulo());
+        }
+        return String.join("\n", listaTitulos);//convierete el conjunto de titulos en una cadena separada por saltos de linea
+    }
+
+    /**
     Regresa un String con la lista de libros de la biblioteca
     @param no recibe parametros
     @return regresa un valor de tipo String 
