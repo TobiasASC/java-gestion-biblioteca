@@ -117,8 +117,6 @@ public class Biblioteca {
         for(Socio unSocio: this.getSocios()){
             if(unSocio.soyDeLaClase().equalsIgnoreCase("Docente")){
               Docente unDocente= (Docente)unSocio;
-            }
-            
             if(unDocente.esResponsable()){
                 docentesResponsables.add(unDocente);
             }
@@ -127,6 +125,7 @@ public class Biblioteca {
         return docentesResponsables;
         
     }
+}
     
     
     /**
@@ -174,7 +173,7 @@ public class Biblioteca {
      * @param p_libro libro que se desea conocer su ubicacion
      * @return (true) nombre del socio que posee el libro / (false) el libro esta en la biblioteca
      */
-    public String quienTieneElLibro(Libro p_libro) throws LibroNoPrestadoException {
+    public String quienTieneElLibro(Libro p_libro) throws LibroNoPrestadoException{
         if (p_libro.prestado()) {
             return p_libro.getPrestamo().getSocio().getNombre();
         } else {
@@ -223,44 +222,28 @@ public class Biblioteca {
 
     }
 
-     /**
-     * Calcula la cantidad de socios de un tipo especifico
-     * 
-     * @param p_tipo es el tipo de socio que se desea contar
-     * 
-     * @return cantidad de socios del tipo solicitado
-     */
-    public int cantidadSociosPorTipo(String p_tipo){
-        int cantTipoSocio = 0;
-
-        for(Socio socios : this.getSocios()) {
-            if (socios.soyDeLaClase().equalsIgnoreCase(p_tipo)) {
-                cantTipoSocio++;
-            }
-        }
-
-        return cantTipoSocio;
-
-    }
-
     /**
     Regresa un String con la lista de socios de la Biblioteca
-    @param no recibe parametros
     @return regresa un valor de tipo String
-    @trows no dispara ninguna excepcion
     */
     public String listaDeSocios(){
-        String lista = "   Lista de Socios: \n";
-        int aumentar = 1;
-        for(Map.Entry<Integer,Socio> socio: this.getSocios().entrySet()){
-            lista += aumentar + ")" + socio.getValue().toString() + "\n";
-            aumentar ++;
+        int i = 0;
+        int docentes = 0;
+        int estudiantes = 0;
+        String listaSocio = "\tLista de Socios:\n\n";
+
+        for(Socio socios : this.getSocios()) {
+            ++i;
+            if (socios.soyDeLaClase().equalsIgnoreCase("Docente")) {
+                ++docentes;
+            } else if (socios.soyDeLaClase().equalsIgnoreCase("Estudiante")) {
+                ++estudiantes;
+            }
+
+            listaSocio = listaSocio + i + ")" + socios.toString() + "\n";
         }
-        lista += "\n********************************************"; +
-            "\nCantidad Socios Tipo Estudiante: " + this.cantidadSociosPorTipo("Estudiante") +
-            "\nCantidad Socios Tipo Docente: " + this.cantidadSociosPorTipo("Docente") +
-            "\n********************************************";
-        return lista;
+
+        return listaSocio + "\n******************************************\nCant. Socios tipo Estudiante: " + estudiantes + "\nCant. Socios tipo Docente: " + docentes + "\n******************************************\n";
     }
 
     /**
@@ -277,54 +260,35 @@ public class Biblioteca {
 
     /**
     Regresa un String con la lista de libros de la biblioteca
-    @param no recibe parametros
     @return regresa un valor de tipo String 
-    @trows no dispara ninguna excepcion
     */
     public String listaDeLibros(){
-        String lista = "   Lista de Libros: \n";
-        int aumentar = 1;
-        for (libro lib: this.getLibros()){
-            String prestado = "";
-            if(lib.prestado()){
-                prestado = "SI";
-            }else{
-                prestado = "NO";
+        int i = 0;
+        String listaLibros = "\tLista de Libros:\n\n";
+
+        for(Libro libros : this.getLibros()) {
+            ++i;
+            if (!libros.prestado()) {
+                listaLibros = listaLibros + i + ") " + libros.toString() + "||Prestado:(NO)\n";
+            } else {
+                listaLibros = listaLibros + i + ") " + libros.toString() + "||Prestado:(SI)\n";
             }
-            lista += aumentar + ")" + "Titulo: " + lib.getTitulo() + "|| Prestado: " + "(" + prestado + ")\n";
-            aumentar++;
         }
-        return lista;
+
+        return listaLibros;
     }
+    
     /**
     Regresa un String con la lista de docentes que hallan sido responsables con la fecha de devolucion
-    @param no recibe parametros
     @return regresa un valor de tipo String
-    @trows no dispara ninguna excepcion
     */
     public String listaDeDocentesResponsables(){
-        String devolver = "   Lista de Docentes Responsables: \n";
-        for(Map.Entry<Integer,Socio> socio: this.getSocios().entrySet()){
-            if(socio.getValue().soyDeLaClase().equals("Docente")){
-                Docente temporal = (Docente)socio.getValue();
-                if(temporal.esResponsable()){
-                    devolver += "* " + socio.getValue().toString() + "\n";
-                }
-            }
+        String listaResponsables = "\tLista de Docentes Responsables:\n\n";
+
+        for(Docente docentes : this.docentesResponsables()) {
+            listaResponsables = listaResponsables + "*" + docentes.toString() + "\n";
         }
-        return devolver;
+
+        return listaResponsables;
     }
-
-    /**
-    Busca un socio especifico dentro de la lista de socios
-    @param p_dni
-    @return regresa un valor de tipo socio
-    @trow no dispara ninguna excepcion
-    */
-    public Socio buscarSocio(int p_dni){
-        return this.getSocios().get(p_dni);
-    }
-
-    
-
 }
