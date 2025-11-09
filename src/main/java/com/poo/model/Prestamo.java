@@ -13,6 +13,7 @@ public class Prestamo
 
     /**
      * Constructor de la clase Prestamo
+     * Recibe 4 paramentros(Calendar, Socio, Libro, Calendar)
      */
     public Prestamo(Calendar p_fechaRetiro, Socio p_socio,Libro p_libro, Calendar p_fechaDevolucion){
         this.setFechaRetiro(p_fechaRetiro);
@@ -48,13 +49,17 @@ public class Prestamo
     }
     
     /**
-     * @param  y   a sample parameter for a method
-     * @return     the sum of x and y 
+     * Metodo registarFechaDevolucion(Calendar): Registra la fecha de devolución
+     * @return  No devuelve ningun valor
      */
     public void registrarFechaDevolucion(Calendar p_fecha){
         this.fechaDevolucion = p_fecha;
     }
     
+     /**
+     * Método vencido(Calendar):Verifica si la fecha del prestamo no vencio.
+     * @return Devuelve true o false dependiendo si la fecha esta vencida.
+     */
     public boolean vencido(Calendar p_fecha){
         int dias = this.getSocio().getDiasPrestamo();
         Calendar retiro = this.getFechaRetiro();

@@ -15,6 +15,7 @@ public abstract class Socio
     
     /**
      * Constructor de la clase Socio
+     * Recibe tres parametros(int, String, int)
      */
     public Socio(int p_dniSocio, String p_nombre, int p_diasPrestamo){
       this.setDniSocio(p_dniSocio);
@@ -65,8 +66,8 @@ public abstract class Socio
     }
     
     /**
-     * @param  y   a sample parameter for a method
-     * @return     the sum of x and y 
+     * Metodo cantLibrosPrestados
+     * @return  Cantidad de libros que fueron prestados 
      */
     public int cantLibrosPrestados(){
         int libros = 0;
@@ -79,10 +80,16 @@ public abstract class Socio
         return libros;
     }
     
+    /**
+     * @return Devuelve el nombre,dni, clase y cantidad de libros prestados
+     */
     public String toString(){
         return ("D.N.I. : " + this.getDniSocio() + "||" + this.getNombre() + "(" + soyDeLaClase() + ") || Libros Prestados: " + this.cantLibrosPrestados());
     }
     
+    /**
+     * @return Si puede o no puede hacer un prestamo.
+     */
     public boolean puedePedir(){
         Calendar hoy = new GregorianCalendar();
         boolean puede = true;
