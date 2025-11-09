@@ -243,4 +243,76 @@ public class Biblioteca {
 
     }
 
+    /**
+    Regresa un String con la lista de socios de la Biblioteca
+    @param no recibe parametros
+    @return regresa un valor de tipo String
+    @trows no dispara ninguna excepcion
+    */
+    public String listaDeSocios(){
+        String lista = "   Lista de Socios: \n";
+        int aumentar = 1;
+        for(Map.Entry<Integer,Socio> socio: this.getSocios().entrySet()){
+            lista += aumentar + ")" + socio.getValue().toString() + "\n";
+            aumentar ++;
+        }
+        lista += "\n********************************************"; +
+            "\nCantidad Socios Tipo Estudiante: " + this.cantidadSociosPorTipo("Estudiante") +
+            "\nCantidad Socios Tipo Docente: " + this.cantidadSociosPorTipo("Docente") +
+            "\n********************************************";
+        return lista;
+    }
+
+    /**
+    Regresa un String con la lista de libros de la biblioteca
+    @param no recibe parametros
+    @return regresa un valor de tipo String 
+    @trows no dispara ninguna excepcion
+    */
+    public String listaDeLibros(){
+        String lista = "   Lista de Libros: \n";
+        int aumentar = 1;
+        for (libro lib: this.getLibros()){
+            String prestado = "";
+            if(lib.prestado()){
+                prestado = "SI";
+            }else{
+                prestado = "NO";
+            }
+            lista += aumentar + ")" + "Titulo: " + lib.getTitulo() + "|| Prestado: " + "(" + prestado + ")\n";
+            aumentar++;
+        }
+        return lista;
+    }
+    /**
+    Regresa un String con la lista de docentes que hallan sido responsables con la fecha de devolucion
+    @param no recibe parametros
+    @return regresa un valor de tipo String
+    @trows no dispara ninguna excepcion
+    */
+    public String listaDeDocentesResponsables(){
+        String devolver = "   Lista de Docentes Responsables: \n";
+        for(Map.Entry<Integer,Socio> socio: this.getSocios().entrySet()){
+            if(socio.getValue().soyDeLaClase().equals("Docente")){
+                Docente temporal = (Docente)socio.getValue();
+                if(temporal.esResponsable()){
+                    devolver += "* " + socio.getValue().toString() + "\n";
+                }
+            }
+        }
+        return devolver;
+    }
+
+    /**
+    Busca un socio especifico dentro de la lista de socios
+    @param p_dni
+    @return regresa un valor de tipo socio
+    @trow no dispara ninguna excepcion
+    */
+    public Socio buscarSocio(int p_dni){
+        return this.getSocios().get(p_dni);
+    }
+
+    
+
 }
