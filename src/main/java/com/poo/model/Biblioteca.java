@@ -90,6 +90,30 @@ public class Biblioteca {
     }
     
     /**
+     * Permite agregar un nuevo socio estudiante al ArrayList de socios de la biblioteca
+     * 
+     * @param p_dniSocio Dni del socio.
+     * @param p_nombre nombre del estudiante.
+     * @param p_carrera carrera del estudiante.
+     * 
+     */
+    public void nuevoSocioEstudiante(int p_dniSocio, String p_nombre, String p_carrera) {
+        this.agregarSocio(new Estudiante(p_dniSocio, p_nombre, p_carrera));
+    }
+    
+    /**
+     * Permite agregar un nuevo socio docente al ArrayList de socios de la biblioteca
+     * 
+     * @param p_dniSocio Dni del socio.
+     * @param p_nombre nombre del docente.
+     * @param p_area area del docente.
+     * 
+     */
+    public void nuevoSocioDocente(int p_dniSocio, String p_nombre, String p_area) {
+        this.agregarSocio(new Docente(p_dniSocio, p_nombre, p_area));
+    }
+    
+    /**
      * Busca el socio según el dni pasado como parametro.
      * 
      * @param p_dni Dni del socio.
