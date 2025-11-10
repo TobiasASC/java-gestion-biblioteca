@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane prefHeight="600.0" prefWidth="800.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.poo.gestorbiblioteca.ui.controller.MainDashboardController">
+    <top>
+        <MenuBar BorderPane.alignment="CENTER">
+            <menus>
+                <Menu mnemonicParsing="false" text="Archivo">
+                    <items>
+                        <Menu mnemonicParsing="false" text="Generar reporte">
+                            <items>
+                                <MenuItem fx:id="menuReporteSocios" mnemonicParsing="false" onAction="#handleReporteSocios" text="Lista de Socios" />
+                                <MenuItem fx:id="menuReporteLibros" mnemonicParsing="false" onAction="#handleReporteLibros" text="Lista de Libros" />
+                                <MenuItem fx:id="menuReporteDocentes" mnemonicParsing="false" onAction="#handleReporteDocentes" text="Docentes Responsables" />
+                            </items>
+                        </Menu>
+
+                        <MenuItem fx:id="menuSalir" mnemonicParsing="false" onAction="#handleSalir" text="Salir" />
+                    </items>
+                </Menu>
+
+                <Menu mnemonicParsing="false" text="Ajustes">
+                    <items>
+                        <MenuItem fx:id="menuAjustesNombre" mnemonicParsing="false" onAction="#handleAjustesNombre" text="Asignar nombre a la Biblioteca" />
+                    </items>
+                </Menu>
+
+                <Menu mnemonicParsing="false" text="Ayuda">
+                    <items>
+                        <MenuItem fx:id="menuAyudaAcercaDe" mnemonicParsing="false" onAction="#handleAcercaDe" text="Acerca de" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+    </top>
+    <center>
+        <TabPane cache="true" prefHeight="568.0" prefWidth="800.0" tabClosingPolicy="UNAVAILABLE" tabMinHeight="30.0" tabMinWidth="100.0" BorderPane.alignment="CENTER">
+            <tabs>
+                <Tab text="Prestamos">
+                    <content>
+                        <fx:include fx:id="prestamosView" source="prestamos/PrestamosView.fxml" />
+                </content>
+            </Tab>
+            <Tab text="Libros">
+                <content>
+                    <fx:include fx:id="librosView" source="libros/LibrosView.fxml" />
+                </content>
+            </Tab>
+            <Tab text="Socios">
+                <content>
+                    <fx:include fx:id="sociosView" source="socios/SociosView.fxml" />
+                </content>
+            </Tab>
+        </tabs>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+    </TabPane>
+</center>
+        </BorderPane>

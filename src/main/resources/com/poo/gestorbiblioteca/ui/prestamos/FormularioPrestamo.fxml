@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import org.controlsfx.control.SearchableComboBox?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="400.0" spacing="15.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.poo.gestorbiblioteca.ui.controller.prestamos.FormularioPrestamoController">
+    <children>
+        <GridPane hgap="10.0" prefWidth="370.0">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="172.0" minWidth="10.0" prefWidth="108.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="322.0" minWidth="10.0" prefWidth="252.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints fillHeight="false" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints fillHeight="false" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints fillHeight="false" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+            <children>
+                <Label text="Socio:">
+                    <font>
+                        <Font name="Segoe UI" size="13.0" />
+                    </font>
+                </Label>
+                <SearchableComboBox fx:id="socioComboBox" prefWidth="350.0" GridPane.columnIndex="1" />
+
+                <Label text="Libro:" GridPane.rowIndex="1">
+                    <font>
+                        <Font name="Segoe UI" size="13.0" />
+                    </font>
+                </Label>
+                <SearchableComboBox fx:id="libroComboBox" prefWidth="350.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                <Label text="Fecha Retiro:" GridPane.rowIndex="2">
+                    <font>
+                        <Font name="Segoe UI" size="13.0" />
+                    </font>
+                </Label>
+                <DatePicker fx:id="fechaDatePicker" prefWidth="350.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+            </children>
+        </GridPane>
+
+        <HBox alignment="CENTER" prefHeight="38.0">
+            <children>
+                <Button fx:id="crearButton" mnemonicParsing="false" onAction="#handleCrearPrestamo" prefHeight="28.0" prefWidth="78.0" text="Crear" />
+            </children>
+        </HBox>
+    </children>
+    <padding>
+        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+    </padding>
+</VBox>

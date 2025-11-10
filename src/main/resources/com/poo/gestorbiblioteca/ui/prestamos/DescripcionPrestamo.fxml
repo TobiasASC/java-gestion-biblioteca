@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="483.0" prefWidth="419.0" spacing="15.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.poo.gestorbiblioteca.ui.controller.prestamos.DescripcionPrestamoController">
+    <padding>
+        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+    </padding>
+    <children>
+
+        <Label text="Estado del Préstamo">
+            <font>
+                <Font name="System Bold" size="14.0" />
+            </font>
+        </Label>
+        <GridPane hgap="10.0">
+            <columnConstraints>
+                <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="140.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="25.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+            <children>
+                <Label style="-fx-font-weight: bold;" text="Estado:" />
+                <Label fx:id="estadoLabel" text="[Estado]" GridPane.columnIndex="1" />
+
+                <Label style="-fx-font-weight: bold;" text="Fecha de Retiro:" GridPane.rowIndex="1" />
+                <Label fx:id="fechaRetiroLabel" text="[Fecha]" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                <Label style="-fx-font-weight: bold;" text="Fecha Límite:" GridPane.rowIndex="2" />
+                <Label fx:id="fechaLimiteLabel" text="[Fecha Límite]" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                <Label style="-fx-font-weight: bold;" text="Fecha Devolución:" GridPane.rowIndex="3" />
+                <Label fx:id="fechaDevolucionLabel" text="[Fecha Dev]" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            </children>
+        </GridPane>
+
+        <Label text="Información del Socio">
+            <font>
+                <Font name="System Bold" size="14.0" />
+            </font>
+        </Label>
+        <GridPane hgap="10.0">
+            <columnConstraints>
+                <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="140.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="25.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+            <children>
+                <Label style="-fx-font-weight: bold;" text="Nombre:" />
+                <Label fx:id="socioNombreLabel" text="[Nombre Socio]" GridPane.columnIndex="1" />
+
+                <Label style="-fx-font-weight: bold;" text="DNI:" GridPane.rowIndex="1" />
+                <Label fx:id="socioDniLabel" text="[DNI Socio]" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                <Label style="-fx-font-weight: bold;" text="Categoría:" GridPane.rowIndex="2" />
+                <Label fx:id="socioTipoLabel" text="[Tipo Socio]" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                <Label style="-fx-font-weight: bold;" text="Contacto:" GridPane.rowIndex="3" />
+                <Label fx:id="socioContactoLabel" text="[Área/Carrera]" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            </children>
+        </GridPane>
+
+        <Label text="Información del Libro">
+            <font>
+                <Font name="System Bold" size="14.0" />
+            </font>
+        </Label>
+        <GridPane hgap="10.0">
+            <columnConstraints>
+                <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="140.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="25.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+            <children>
+                <Label style="-fx-font-weight: bold;" text="Título:">
+                    <font>
+                        <Font name="Segoe UI" size="13.0" />
+                    </font>
+                </Label>
+                <Label fx:id="libroTituloLabel" text="[Título Libro]" GridPane.columnIndex="1">
+                    <font>
+                        <Font name="Segoe UI" size="13.0" />
+                    </font>
+                </Label>
+
+                <Label style="-fx-font-weight: bold;" text="Editorial:" GridPane.rowIndex="1">
+                    <font>
+                        <Font name="Segoe UI" size="13.0" />
+                    </font>
+                </Label>
+                <Label fx:id="libroEditorialLabel" text="[Editorial]" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                    <font>
+                        <Font name="Segoe UI" size="13.0" />
+                    </font>
+                </Label>
+
+                <Label style="-fx-font-weight: bold;" text="Edición:" GridPane.rowIndex="2">
+                    <font>
+                        <Font name="Segoe UI" size="13.0" />
+                    </font>
+                </Label>
+                <Label fx:id="libroEdicionLabel" text="[Edición]" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                    <font>
+                        <Font name="Segoe UI" size="13.0" />
+                    </font>
+                </Label>
+            </children>
+        </GridPane>
+
+        <HBox alignment="CENTER_RIGHT" spacing="10.0">
+            <children>
+                <Button fx:id="finalizarButton" mnemonicParsing="false" onAction="#handleFinalizarPrestamo" prefHeight="28.0" prefWidth="120.0" text="Finalizar Préstamo" />
+
+                <Button fx:id="eliminarButton" mnemonicParsing="false" onAction="#handleEliminarPrestamo" prefHeight="28.0" prefWidth="120.0" style="-fx-background-color: #dc3545; -fx-text-fill: white;" text="Eliminar Préstamo" />
+            </children>
+        </HBox>
+    </children>
+</VBox>
