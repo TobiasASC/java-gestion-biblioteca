@@ -14,7 +14,6 @@ import java.util.Optional;
 
 public class DescripcionLibroController extends Controller {
 
-    // --- Atributos FXML ---
     @FXML private Label tituloLabel;
     @FXML private Label edicionLabel;
     @FXML private Label editorialLabel;
@@ -22,47 +21,46 @@ public class DescripcionLibroController extends Controller {
     @FXML private Button eliminarButton;
     @FXML private Button cerrarButton;
 
-    // --- Atributos de Lógica ---
     private Biblioteca biblioteca;
     private Stage stage;
-    private Libro libroSeleccionado; // El libro cuyos detalles estamos mostrando
+    private Libro libroSeleccionado;
 
     /**
-     * initialize() se deja vacío ya que los datos se inyectarán después.
-     */
-    @FXML
-    private void initialize() {
-        // No se necesita lógica de inicialización aquí
-    }
-
-    /**
-     * Inyector para la lógica de negocio.
+     * Inyecta la lógica de negocio.
      */
     public void setBiblioteca(Biblioteca biblioteca) {
         this.biblioteca = biblioteca;
     }
 
     /**
-     * Inyector para el Stage (ventana).
+     * Inyecta el Stage.
      */
     public void setStage(Stage stage) {
         this.stage = stage;
     }
 
     /**
-     * Método para INYECTAR el libro a mostrar.
-     * Este es el método más importante de este controlador.
+     * Inyecta el libro a mostrar.
      */
-    public void setLibro(Libro libro) {
+    public void setLibroSeleccionado(Libro libro) {
         this.libroSeleccionado = libro;
-        // Rellenar los Labels con los datos del libro
-        if (libro != null) {
-            tituloLabel.setText(libro.getTitulo());
-            edicionLabel.setText(String.valueOf(libro.getEdicion()));
-            editorialLabel.setText(libro.getEditorial());
-            anioLabel.setText(String.valueOf(libro.getAnio()));
+        this.poblarCamposLibro();
+    }
+
+    public Libro getLibroSeleccionado(){
+        return this.libroSeleccionado;
+    }
+
+    /**
+     * Puebla los campos de la descripcion con los datos del libro seleccionado.
+     */
+    public void poblarCamposLibro(){
+        if (this.getLibroSeleccionado() != null) {
+            tituloLabel.setText(getLibroSeleccionado().getTitulo());
+            edicionLabel.setText(String.valueOf(getLibroSeleccionado().getEdicion()));
+            editorialLabel.setText(getLibroSeleccionado().getEditorial());
+            anioLabel.setText(String.valueOf(getLibroSeleccionado().getAnio()));
         } else {
-            // Manejar caso de libro nulo si fuera posible
             tituloLabel.setText("N/A");
             edicionLabel.setText("N/A");
             editorialLabel.setText("N/A");
@@ -80,15 +78,15 @@ public class DescripcionLibroController extends Controller {
             return;
         }
 
-        // 1. Pedir confirmación al usuario (muy importante para eliminaciones)
+        // Confirmación
         Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
         confirmAlert.setTitle("Confirmar Eliminación");
         confirmAlert.setHeaderText("¿Está seguro de que desea eliminar este libro?");
         confirmAlert.setContentText("Libro: " + libroSeleccionado.getTitulo() + "\nEsta acción no se puede deshacer.");
-
         Optional<ButtonType> result = confirmAlert.showAndWait();
+
+        // Eliminación
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            // 2. Si el usuario confirma, llamar al método de Biblioteca para eliminar
             try {
                 biblioteca.eliminarLibro(libroSeleccionado);
                 mostrarAlerta("Éxito", "Libro eliminado correctamente.", Alert.AlertType.INFORMATION);
@@ -104,11 +102,6 @@ public class DescripcionLibroController extends Controller {
      */
     @FXML
     private void handleCerrar() {
-        stage.close(); // Simplemente cierra la ventana
+        stage.close();
     }
-
-    /**
-     * Método helper para mostrar alertas al usuario.
-     */
-
 }

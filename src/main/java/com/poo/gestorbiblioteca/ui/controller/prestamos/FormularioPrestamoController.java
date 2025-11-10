@@ -11,20 +11,18 @@ import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.stage.Stage;
 import org.controlsfx.control.SearchableComboBox;
+
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
 
 
 public class FormularioPrestamoController extends Controller {
 
-    // --- Atributos FXML (¡Tipos cambiados!) ---
     @FXML private SearchableComboBox<Socio> socioComboBox;
     @FXML private SearchableComboBox<Libro> libroComboBox;
     @FXML private Button crearButton;
     @FXML private DatePicker fechaDatePicker;
-
 
     private Biblioteca biblioteca;
     private Stage stage;
@@ -35,15 +33,17 @@ public class FormularioPrestamoController extends Controller {
     }
 
     /**
-     * Inyector para la lógica de negocio.
-     * Aquí poblamos los ComboBox.
+     * Inyecta la lógica de negocio.
+     * Llama al metodo poblador de combobox
      */
     public void setBiblioteca(Biblioteca biblioteca) {
         this.biblioteca = biblioteca;
         poblarComboBoxPrestamo();
-
     }
 
+    /**
+     * Puebla los combo box
+     */
     private void poblarComboBoxPrestamo(){
         if (biblioteca.getSocios() != null) {
             socioComboBox.setItems(FXCollections.observableArrayList(biblioteca.sociosHabilitados()));
@@ -51,31 +51,34 @@ public class FormularioPrestamoController extends Controller {
             libroComboBox.setItems(FXCollections.observableArrayList(biblioteca.librosDispobibles()));
     }
     /**
-     * Inyector para el Stage (ventana)
+     * Inyecta el stage
      */
     public void setStage(Stage stage) {
         this.stage = stage;
     }
 
     /**
-     * Se llama al hacer clic en el botón "Crear"
+     * Manejador del botón "Crear"
      */
     @FXML
     private void handleCrearPrestamo() {
-
+        // Obtiene los datos de los campos
         Socio socioSeleccionado = socioComboBox.getSelectionModel().getSelectedItem();
         Libro libroSeleccionado = libroComboBox.getSelectionModel().getSelectedItem();
         LocalDate fechaSeleccionada = fechaDatePicker.getValue();
 
+        // Validaciones
         if (socioSeleccionado == null || libroSeleccionado == null) {
             mostrarAlerta("Error de Validación", "Debe seleccionar un socio y un libro.", Alert.AlertType.INFORMATION);
             return;
         }
 
+        // Convierte fechaSeleccionada a tipo Calendar
         GregorianCalendar fechaCalendar = GregorianCalendar.from(
                 fechaSeleccionada.atStartOfDay(ZoneId.systemDefault())
         );
 
+        // Realiza el prestamo
         boolean exito = biblioteca.prestarLibro(
                 fechaCalendar,
                 socioSeleccionado,

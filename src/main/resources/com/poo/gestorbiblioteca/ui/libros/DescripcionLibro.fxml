@@ -72,7 +72,7 @@
 
         <HBox alignment="CENTER_RIGHT" prefHeight="38.0">
             <children>
-                <Button fx:id="eliminarButton" mnemonicParsing="false" onAction="#handleEliminarLibro" prefHeight="28.0" prefWidth="78.0" style="-fx-background-color: #dc3545; -fx-text-fill: white;" text="Eliminar" />
+                <Button fx:id="eliminarButton" mnemonicParsing="false" onAction="#handleEliminarLibro" prefHeight="28.0" prefWidth="123.0" style="-fx-background-color: #dc3545; -fx-text-fill: white;" text="Eliminar libro" />
                 <Button fx:id="cerrarButton" mnemonicParsing="false" onAction="#handleCerrar" prefHeight="28.0" prefWidth="78.0" style="-fx-background-color: #6c757d; -fx-text-fill: white;" text="Cerrar">
                     <HBox.margin>
                         <Insets left="10.0" />

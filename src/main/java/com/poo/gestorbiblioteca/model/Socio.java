@@ -1,6 +1,10 @@
 package com.poo.gestorbiblioteca.model;
+
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Iterator;
 
 /**
  * Clase abstracta socio

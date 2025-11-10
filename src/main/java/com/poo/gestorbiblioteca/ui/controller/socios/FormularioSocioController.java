@@ -4,11 +4,7 @@ import com.poo.gestorbiblioteca.core.Biblioteca;
 import com.poo.gestorbiblioteca.model.Socio;
 import com.poo.gestorbiblioteca.ui.controller.Controller;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 public class FormularioSocioController extends Controller {

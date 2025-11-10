@@ -1,8 +1,6 @@
 package com.poo.gestorbiblioteca.ui.controller;
 
-import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.stage.Stage;
 
 public abstract class Controller {
 

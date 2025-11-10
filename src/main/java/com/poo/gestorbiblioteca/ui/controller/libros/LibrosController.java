@@ -1,6 +1,6 @@
 package com.poo.gestorbiblioteca.ui.controller.libros;
 
-import com.poo.exception.LibroNoPrestadoException;
+import com.poo.gestorbiblioteca.exception.LibroNoPrestadoException;
 import com.poo.gestorbiblioteca.core.Biblioteca;
 import com.poo.gestorbiblioteca.model.Libro;
 import com.poo.gestorbiblioteca.ui.controller.Controller;
@@ -8,6 +8,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -27,7 +28,6 @@ import java.io.IOException;
 
 public class LibrosController extends Controller {
 
-
     @FXML private TableView<Libro> tablaLibros;
     @FXML private TableColumn<Libro, String> colLibroTitulo;
     @FXML private TableColumn<Libro, Integer> colLibroEdicion;
@@ -41,7 +41,11 @@ public class LibrosController extends Controller {
     private ObservableList<Libro> listaMaestraLibros = FXCollections.observableArrayList();
 
     /**
-     * Configura los pipes para la TABLA DE LIBROS.
+     * Inicializa:
+     *  - El data binding de las columnas
+     *  - La configuración del filtro de búsqueda
+     * Asigna:
+     *  - El metodo observador a la tabla de libros.
      */
     @FXML
     private void initialize() {
@@ -50,41 +54,50 @@ public class LibrosController extends Controller {
         this.tablaLibros.setOnMouseClicked( event -> this.onTablaLibrosDobleClic(event));
     }
 
+    /**
+     * Inyecta la lógica de negocio
+     * Refresca la lista
+     */
     public void setBiblioteca(Biblioteca biblioteca) {
         this.biblioteca = biblioteca;
         this.refrescarTablaLibros();
     }
 
+    /**
+     * Mapea los valores de las columnas con los atributos de la clase Libro,
+     * mediante un control virtualizado
+     */
     private void configurarColumnas(){
         colLibroTitulo.setCellValueFactory(new PropertyValueFactory<>("titulo"));
         colLibroEdicion.setCellValueFactory(new PropertyValueFactory<>("edicion"));
         colLibroEditorial.setCellValueFactory(new PropertyValueFactory<>("editorial"));
         colLibroAnio.setCellValueFactory(new PropertyValueFactory<>("anio"));
-
         colLibroPrestado.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().prestado() ? "Sí" : "No")
         );
-
         colLibroPrestadoA.setCellValueFactory(cellData -> {
             Libro libro = cellData.getValue();
             String nombre = "-";
             if (this.biblioteca != null && libro.prestado()) {
                 try {
                     nombre = this.biblioteca.quienTieneElLibro(libro);
-                } catch (LibroNoPrestadoException e) { /* Ignorar */ }
+                } catch (LibroNoPrestadoException e) {}
             }
             return new SimpleStringProperty(nombre);
         });
     }
 
+    /**
+     * Configura la busqueda, con una logica de filtrado y ordenamiento reactivo
+     */
     private void configurarFiltroBusqueda(){
+
+        // Capa de filtrado
         FilteredList<Libro> listaFiltrada = new FilteredList<>(listaMaestraLibros, p -> true);
 
         campoBusquedaLibros.textProperty().addListener((observable, oldValue, newValue) -> {
 
             listaFiltrada.setPredicate(libro -> {
-
-                // Si el campo de búsqueda está vacío, muestra todo.
                 if (newValue == null || newValue.isEmpty() || newValue.isBlank()) {
                     return true;
                 }
@@ -103,7 +116,11 @@ public class LibrosController extends Controller {
             });
         });
 
-        this.tablaLibros.setItems(listaFiltrada);
+        // Capa de ordenamiento
+        SortedList<Libro> listaOrdenada = new SortedList<>(listaFiltrada);
+        listaOrdenada.comparatorProperty().bind(tablaLibros.comparatorProperty());
+
+        this.tablaLibros.setItems(listaOrdenada);
     }
 
     /**
@@ -117,10 +134,9 @@ public class LibrosController extends Controller {
     }
 
     /**
-     * Recibe el objeto MouseEvent del del metodo setOnMouseClicked y valida:
-     * si es doble click y si es click derecho selecciona el objeto Libro y lo pasa al metodo
+     * Recibe el objeto MouseEvent del metodo setOnMouseClicked y valida:
+     * si es doble click y si es click izquierdo selecciona el objeto Libro y lo pasa al metodo
      * handleDobleClicLibro.
-     * @param event
      */
     private void onTablaLibrosDobleClic(MouseEvent event) {
         if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
@@ -131,75 +147,83 @@ public class LibrosController extends Controller {
         }
     }
 
+    /**
+     * Maneja la accion del boton "Nuevo Libro"
+     */
     @FXML
     private void handleNuevoLibro() {
         try {
-            // carga el FXML del formulario
+            //Se carga el FXML
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/poo/gestorbiblioteca/ui/libros/FormularioLibro.fxml"));
             Parent root = loader.load();
 
-            //Obtiene el controlador del formulario
+            //Se obtiene el controlador
             FormularioLibroController formController = loader.getController();
 
-            //Crea el nuevo Stage (la ventana popup)
+            //Se crea un nuevo stage en modo popup
             Stage popupStage = new Stage();
             popupStage.initModality(Modality.APPLICATION_MODAL);
             popupStage.setTitle("Nuevo Libro");
             Image appIcon = new Image(getClass().getResourceAsStream("/com/poo/gestorbiblioteca/ui/images/libro-icon.png"));
             popupStage.getIcons().add(appIcon);
 
+            //Crea un scene y lo asigna al stage
             Scene popupScene = new Scene(root);
             popupScene.getStylesheets().add(
-                    getClass().getResource("/com/poo/gestorbiblioteca/ui/style.css").toExternalForm()
-            );
+                    getClass().getResource("/com/poo/gestorbiblioteca/ui/style.css").toExternalForm());
             popupStage.setScene(popupScene);
 
-            //Inyecta
+            //Inyecta la biblioteca y el stage al controlador
             formController.setBiblioteca(this.biblioteca);
             formController.setStage(popupStage);
 
-            // 5. Mostrar la ventana y esperar
             popupStage.showAndWait();
 
-            // 6. Refrescar la tabla después de que el popup se cierre
             this.refrescarTablaLibros();
 
         } catch (IOException e) {
             e.printStackTrace();
-            // (Mostrar alerta de error al usuario)
         }
     }
 
+    /**
+     * Maneja la accion del doble click en la tabla
+     */
     private void handleDobleClicLibro(Libro libro) {
         try {
+            //Se carga el FXML
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/poo/gestorbiblioteca/ui/libros/DescripcionLibro.fxml"));
             Parent root = loader.load();
 
+            //Se obtiene el controlador
             DescripcionLibroController descController = loader.getController();
+
+            //Se crea un nuevo stage en modo popup
             Stage popupStage = new Stage();
             popupStage.initModality(Modality.APPLICATION_MODAL);
             popupStage.setTitle("Detalles del Libro");
             Image appIcon = new Image(getClass().getResourceAsStream("/com/poo/gestorbiblioteca/ui/images/libro-icon.png"));
             popupStage.getIcons().add(appIcon);
+
+            //Se crea un nuevo scene y lo asigna al stage
             Scene popupScene = new Scene(root);
             popupStage.setScene(popupScene);
             popupScene.getStylesheets().add(
                     getClass().getResource("/com/poo/gestorbiblioteca/ui/style.css").toExternalForm()
             );
 
-            // ¡INYECTAR! Pasa la biblioteca, el stage y el libro seleccionado al controlador del popup
+            //Inyecta la biblioteca, el stage y el libro al controlador
             descController.setBiblioteca(this.biblioteca);
             descController.setStage(popupStage);
-            descController.setLibro(libro); // <-- ¡Importante! Pasa el libro aquí
+            descController.setLibroSeleccionado(libro);
 
             popupStage.showAndWait();
-            this.refrescarTablaLibros(); // Refrescar la tabla al cerrar el popup (por si se eliminó)
+            this.refrescarTablaLibros();
 
         } catch (IOException e) {
             e.printStackTrace();
             mostrarAlerta("Error", "No se pudo cargar la descripción del libro.", Alert.AlertType.ERROR);
         }
     }
-
 }
 

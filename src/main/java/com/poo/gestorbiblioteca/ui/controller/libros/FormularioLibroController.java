@@ -17,34 +17,40 @@ public class FormularioLibroController extends Controller {
     @FXML private Button crearButton;
 
     private Biblioteca biblioteca;
-    private Stage stage; // La ventana popup
+    private Stage stage;
 
+    /**
+     * Inyecta lógica de negocio
+     */
     public void setBiblioteca(Biblioteca biblioteca) {
         this.biblioteca = biblioteca;
     }
 
+    /**
+     * Inyeca el Stage
+     */
     public void setStage(Stage stage) {
         this.stage = stage;
     }
 
     /**
-     * Se llama al hacer clic en el botón "Crear"
+     * Manejador del botón "Crear"
      */
     @FXML
     private void handleCrearLibro() {
+        // Obtiene los datos de los campos
         String titulo = tituloTextField.getText();
         String edicionStr = edicionTextField.getText();
         String editorial = editorialTextField.getText();
         String anioStr = anioTextField.getText();
+        int edicion;
+        int anio;
 
-        //Validaciones
+        // Validaciones
         if (titulo.isBlank() || edicionStr.isBlank() || editorial.isBlank() || anioStr.isBlank()) {
             mostrarAlerta("Error de Validación", "Todos los campos son obligatorios.", Alert.AlertType.INFORMATION);
             return;
         }
-
-        int edicion;
-        int anio;
         try {
             edicion = Integer.parseInt(edicionStr);
             anio = Integer.parseInt(anioStr);
@@ -53,11 +59,9 @@ public class FormularioLibroController extends Controller {
             return;
         }
 
-
+        //Creación
         try {
-
             biblioteca.nuevoLibro(titulo, edicion, editorial, anio);
-
         } catch (Exception e) {
             mostrarAlerta("Error al Crear", "No se pudo crear el libro: " + e.getMessage(), Alert.AlertType.INFORMATION);
             return;
@@ -66,5 +70,4 @@ public class FormularioLibroController extends Controller {
         mostrarAlerta("Éxito", "Libro creado correctamente.", Alert.AlertType.INFORMATION);
         stage.close();
     }
-
 }

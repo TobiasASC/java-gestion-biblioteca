@@ -1,5 +1,8 @@
 package com.poo.gestorbiblioteca.persistence;
 
+import com.poo.gestorbiblioteca.core.Biblioteca;
+import com.poo.gestorbiblioteca.utils.PobladoraDatos;
+
 import java.io.*;
 
 
@@ -23,11 +26,12 @@ public class ObjectStreamPersistenceService {
     /**
      * Carga los datos desde el archivo binario.
      */
-    public DatosPersistidos cargarDatos() throws IOException, ClassNotFoundException {
+    public DatosPersistidos cargarDatos(Biblioteca biblioteca) throws IOException, ClassNotFoundException {
         File archivo = new File(filePath);
 
         if (!archivo.exists()) {
             System.out.println("No se encontró " + filePath + ". Creando nuevo almacén de datos.");
+            PobladoraDatos.poblar(biblioteca);
             return new DatosPersistidos();
         }
 

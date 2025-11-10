@@ -9,6 +9,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -26,28 +27,23 @@ import java.util.ArrayList;
 
 public class SociosController extends Controller {
 
-    @FXML
-    private TableView<Socio> tablaSocios;
-    @FXML
-    private TableColumn<Socio, Integer> colSocioDNI;
-    @FXML
-    private TableColumn<Socio, String> colSocioNombre;
-    @FXML
-    private TableColumn<Socio, String> colSocioTipo;
-    @FXML
-    private TableColumn<Socio, String> colSocioAreaCarrera;
-    @FXML
-    private TextField campoBusquedaSocios;
-
-    @FXML
-    private Button btnNuevoSocio;
+    @FXML private TableView<Socio> tablaSocios;
+    @FXML private TableColumn<Socio, Integer> colSocioDNI;
+    @FXML private TableColumn<Socio, String> colSocioNombre;
+    @FXML private TableColumn<Socio, String> colSocioTipo;
+    @FXML private TableColumn<Socio, String> colSocioAreaCarrera;
+    @FXML private TextField campoBusquedaSocios;
+    @FXML private Button btnNuevoSocio;
 
     private Biblioteca biblioteca;
     private ObservableList<Socio> listaMaestraSocios = FXCollections.observableArrayList();
 
     /**
-     * Configura las "tuberías" (Cell Value Factories) para la TABLA DE SOCIOS.
-     * Se llama automáticamente cuando se carga el FXML.
+     * Inicializa:
+     *  - El data binding de las columnas
+     *  - La configuración del filtro de búsqueda
+     * Asigna:
+     *  - El metodo observador a la tabla de libros.
      */
     @FXML
     private void initialize() {
@@ -56,14 +52,52 @@ public class SociosController extends Controller {
         tablaSocios.setOnMouseClicked(event -> onTablaSociosDobleClic(event));
     }
 
-    private void configurarFiltroBusqueda() {
-        FilteredList<Socio> listaFiltrada = new FilteredList<>(listaMaestraSocios, p -> true);
+    /**
+     * Inyecta la lógica de negocio
+     * Refresca la lista
+     */
+    public void setBiblioteca(Biblioteca biblioteca) {
+        this.biblioteca = biblioteca;
+        this.refrescarTablaSocios();
+    }
 
+    /**
+     * Mapea los valores de las columnas con los atributos de la clase Socio,
+     * mediante un control virtualizado
+     */
+    private void configurarColumnas() {
+        colSocioDNI.setCellValueFactory(new PropertyValueFactory<>("dniSocio"));
+        colSocioNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+        colSocioTipo.setCellValueFactory(cellData -> {
+            String tipo = cellData.getValue().soyDeLaClase();
+            return new SimpleStringProperty(tipo);
+        });
+        colSocioAreaCarrera.setCellValueFactory(cellData -> {
+
+            Socio socio = cellData.getValue();
+            String valor = "-";
+
+            // Comprueba si el Socio es un Docente
+            if (socio instanceof Docente) {
+                valor = ((Docente) socio).getArea();
+            }
+            // Comprueba si el Socio es un Estudiante
+            else if (socio instanceof Estudiante) {
+                valor = ((Estudiante) socio).getCarrera();
+            }
+            return new SimpleStringProperty(valor);
+        });
+    }
+
+    /**
+     * Configura la busqueda, con una logica de filtrado y ordenamiento reactivo
+     */
+    private void configurarFiltroBusqueda() {
+        // Capa de filtrado
+        FilteredList<Socio> listaFiltrada = new FilteredList<>(listaMaestraSocios, p -> true);
         campoBusquedaSocios.textProperty().addListener((observable, oldValue, newValue) -> {
 
             listaFiltrada.setPredicate(socio -> {
-
-                // Si el campo de búsqueda está vacío, muestra todo.
                 if (newValue == null || newValue.isEmpty() || newValue.isBlank()) {
                     return true;
                 }
@@ -73,15 +107,12 @@ public class SociosController extends Controller {
                 if (socio.getNombre().toLowerCase().contains(filtroMinusculas)) {
                     return true;
                 }
-
                 else if (String.valueOf(socio.getDniSocio()).contains(filtroMinusculas)) {
                     return true;
                 }
-
                 else if (socio.soyDeLaClase().toLowerCase().contains(filtroMinusculas)) {
                     return true;
                 }
-
                 else if (socio instanceof Docente) {
                     if (((Docente) socio).getArea().toLowerCase().contains(filtroMinusculas)) {
                         return true;
@@ -91,47 +122,20 @@ public class SociosController extends Controller {
                         return true;
                     }
                 }
-
                 return false;
             });
         });
-        tablaSocios.setItems(listaFiltrada);
+
+        // Capa de ordenamiento
+        SortedList<Socio> listaOrdenada = new SortedList<>(listaFiltrada);
+        listaOrdenada.comparatorProperty().bind(tablaSocios.comparatorProperty());
+
+        this.tablaSocios.setItems(listaOrdenada);
     }
 
-    private void configurarColumnas() {
-        // Asocia la columna "DNI" con el metodo getDniSocio() de la clase Socio
-        colSocioDNI.setCellValueFactory(new PropertyValueFactory<>("dniSocio"));
-
-        colSocioNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
-
-        colSocioTipo.setCellValueFactory(cellData -> {
-            String tipo = cellData.getValue().soyDeLaClase();
-            return new SimpleStringProperty(tipo);
-        });
-
-        colSocioAreaCarrera.setCellValueFactory(cellData -> {
-
-            Socio socio = cellData.getValue();
-            String valor = "-";
-
-            // Comprueba si el Socio es en realidad un Docente
-            if (socio instanceof Docente) {
-                valor = ((Docente) socio).getArea();
-            }
-            // Comprueba si el Socio es en realidad un Estudiante
-            else if (socio instanceof Estudiante) {
-                valor = ((Estudiante) socio).getCarrera();
-            }
-
-            return new SimpleStringProperty(valor);
-        });
-    }
-
-    public void setBiblioteca(Biblioteca biblioteca) {
-        this.biblioteca = biblioteca;
-        this.refrescarTablaSocios();
-    }
-
+    /**
+     * Refresca la tabla de libros
+     */
     public void refrescarTablaSocios(){
 
         if (this.biblioteca == null || this.biblioteca.getSocios() == null) {
@@ -146,21 +150,23 @@ public class SociosController extends Controller {
     }
 
     /**
-     * Es llamado por el 'listener' de la tabla. Revisa si fue un doble clic.
+     * Recibe el objeto MouseEvent del metodo setOnMouseClicked y valida:
+     * si es doble click y si es click izquierdo selecciona el objeto Socio y lo pasa al metodo
+     * handleDobleClicLibro.
      */
     private void onTablaSociosDobleClic(MouseEvent event) {
         if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
             Socio socioSeleccionado = tablaSocios.getSelectionModel().getSelectedItem();
             if (socioSeleccionado != null) {
-                handleAbrirDescripcionSocio(socioSeleccionado);
+                handleDobleClicSocio(socioSeleccionado);
             }
         }
     }
 
     /**
-     * Abre el popup 'DescripcionSocio.fxml' y le pasa el socio seleccionado.
+     * Maneja la accion del doble click en la tabla
      */
-    private void handleAbrirDescripcionSocio(Socio socio) {
+    private void handleDobleClicSocio(Socio socio) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/poo/gestorbiblioteca/ui/socios/DescripcionSocio.fxml"));
             Parent root = loader.load();
@@ -193,9 +199,8 @@ public class SociosController extends Controller {
     }
 
     /**
-     * Configura y lanza un mensaje pop-up de alerta.
+     * Maneja la accion del boton "Nuevo Libro"
      */
-
     @FXML
     private void handleNuevoSocio() {
         try {

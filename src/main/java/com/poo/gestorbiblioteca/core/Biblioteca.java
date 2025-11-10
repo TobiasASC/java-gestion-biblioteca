@@ -1,10 +1,10 @@
 package com.poo.gestorbiblioteca.core;
 
-import com.poo.exception.LibroNoPrestadoException;
+import com.poo.gestorbiblioteca.exception.LibroNoPrestadoException;
 import com.poo.gestorbiblioteca.model.*;
 import com.poo.gestorbiblioteca.persistence.DatosPersistidos;
 import com.poo.gestorbiblioteca.persistence.ObjectStreamPersistenceService;
-import com.poo.gestorbiblioteca.utils.PobladoraDatos;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -34,8 +34,8 @@ public class Biblioteca {
 
         this.persistenceService = new ObjectStreamPersistenceService(ARCHIVO_DATOS);
 
-        this.cargarDatosDesdeServicio();
-        PobladoraDatos.poblar(this);
+        this.cargarDatosDesdeServicio(this);
+
     }
 
     /**
@@ -397,29 +397,29 @@ public class Biblioteca {
 
 
     //Metodos de Persistencia
-    private void cargarDatosDesdeServicio() {
+    private void cargarDatosDesdeServicio(Biblioteca biblioteca) {
         try {
-            // Pide al servicio que cargue los datos
-            DatosPersistidos datos = persistenceService.cargarDatos();
-            this.socios = datos.socios;
-            this.libros = datos.libros;
+            // Le pide al servicio que cargue los datos
+            DatosPersistidos datos = persistenceService.cargarDatos(biblioteca);
+            this.setSocios(datos.getSocios());
+            this.setLibros(datos.getLibros());
 
-        } catch (IOException | ClassNotFoundException e) { // <-- ¡Añade ClassNotFoundException!
+        } catch (IOException | ClassNotFoundException e) {
             System.err.println("ERROR FATAL AL CARGAR DATOS. No se pudo leer " + ARCHIVO_DATOS);
             e.printStackTrace();
-            // Inicia con listas vacías
-            this.socios = new ArrayList<>();
-            this.libros = new ArrayList<>();
+           // Si falla la carga se inicializan los atributos con listas vacías para evitar un crash.
+            this.setSocios(new ArrayList<>());
+            this.setLibros(new ArrayList<>());
         }
     }
 
     public void guardarDatosEnArchivo() {
         try {
-            DatosPersistidos datosActuales = new DatosPersistidos(this.socios, this.libros);
+            DatosPersistidos datosActuales = new DatosPersistidos(this.getSocios(), this.getLibros());
             persistenceService.guardarDatos(datosActuales);
-            System.out.println("Datos guardados exitosamente.");
+            System.out.println("Datos guardados.");
 
-        } catch (IOException e) { // <-- ¡Ya no hay ClassNotFoundException!
+        } catch (IOException e) {
             System.err.println("ERROR: No se pudieron guardar los datos en " + ARCHIVO_DATOS);
             e.printStackTrace();
         }

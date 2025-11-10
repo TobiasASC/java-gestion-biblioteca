@@ -1,7 +1,8 @@
 package com.poo.gestorbiblioteca.ui.controller.prestamos;
 
 import com.poo.gestorbiblioteca.core.Biblioteca;
-import com.poo.gestorbiblioteca.model.*; // Importa todos los modelos
+import com.poo.gestorbiblioteca.exception.LibroNoPrestadoException;
+import com.poo.gestorbiblioteca.model.*;
 import com.poo.gestorbiblioteca.ui.controller.Controller;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -39,10 +40,16 @@ public class DescripcionPrestamoController extends Controller {
     private Prestamo prestamoSeleccionado;
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
+    /**
+     * Inyecta la logica de negocio
+     */
     public void setBiblioteca(Biblioteca biblioteca) {
         this.biblioteca = biblioteca;
     }
 
+    /**
+     * Inyecta el stage
+     */
     public void setStage(Stage stage) {
         this.stage = stage;
     }
@@ -53,30 +60,41 @@ public class DescripcionPrestamoController extends Controller {
      */
     public void setPrestamo(Prestamo prestamo) {
         this.prestamoSeleccionado = prestamo;
-        if (prestamo == null) return;
+        this.poblarCamposPrestamo();
+    }
 
-        // --- 1. Poblar Sección Prestamo ---
-        estadoLabel.setText(prestamo.estado());
-        fechaRetiroLabel.setText(dateFormat.format(prestamo.getFechaRetiro().getTime()));
+    public Prestamo getPrestamoSeleccionado(){
+        return this.prestamoSeleccionado;
+    }
 
-        if (prestamo.getSocio() != null) {
-            Calendar fechaLimite = (Calendar) prestamo.getFechaRetiro().clone();
-            fechaLimite.add(Calendar.DAY_OF_MONTH, prestamo.getSocio().getDiasPrestamo());
+    /**
+     * Puebla los campos de la descripcion con los datos del prestamo seleccionado.
+     */
+    public void poblarCamposPrestamo(){
+        if (getPrestamoSeleccionado() == null) return;
+
+        // Puebla Sección Prestamo
+        estadoLabel.setText(getPrestamoSeleccionado().estado());
+        fechaRetiroLabel.setText(dateFormat.format(getPrestamoSeleccionado().getFechaRetiro().getTime()));
+
+        if (getPrestamoSeleccionado().getSocio() != null) {
+            Calendar fechaLimite = (Calendar) getPrestamoSeleccionado().getFechaRetiro().clone();
+            fechaLimite.add(Calendar.DAY_OF_MONTH, getPrestamoSeleccionado().getSocio().getDiasPrestamo());
             fechaLimiteLabel.setText(dateFormat.format(fechaLimite.getTime()));
         } else {
             fechaLimiteLabel.setText("N/A");
         }
 
-        if (prestamo.getFechaDevolucion() != null) {
-            fechaDevolucionLabel.setText(dateFormat.format(prestamo.getFechaDevolucion().getTime()));
+        if (getPrestamoSeleccionado().getFechaDevolucion() != null) {
+            fechaDevolucionLabel.setText(dateFormat.format(getPrestamoSeleccionado().getFechaDevolucion().getTime()));
             finalizarButton.setDisable(true);
         } else {
             fechaDevolucionLabel.setText("Pendiente");
-            finalizarButton.setDisable(false); // Habilita el botón si está pendiente
+            finalizarButton.setDisable(false);
         }
 
-        // --- 2. Poblar Sección Socio ---
-        Socio socio = prestamo.getSocio();
+        // Puebla Sección Socio
+        Socio socio = getPrestamoSeleccionado().getSocio();
         if (socio != null) {
             socioNombreLabel.setText(socio.getNombre());
             socioDniLabel.setText(String.valueOf(socio.getDniSocio()));
@@ -92,8 +110,8 @@ public class DescripcionPrestamoController extends Controller {
             socioNombreLabel.setText("Socio no encontrado");
         }
 
-        // --- 3. Poblar Sección Libro ---
-        Libro libro = prestamo.getLibro();
+        // Puebla Sección Libro
+        Libro libro = getPrestamoSeleccionado().getLibro();
         if (libro != null) {
             libroTituloLabel.setText(libro.getTitulo());
             libroEditorialLabel.setText(libro.getEditorial());
@@ -108,12 +126,12 @@ public class DescripcionPrestamoController extends Controller {
      */
     @FXML
     private void handleFinalizarPrestamo() {
-        if (prestamoSeleccionado.getFechaDevolucion() != null) {
-            mostrarAlerta("Información", "Este préstamo ya fue finalizado.", Alert.AlertType.INFORMATION);
-            return;
+        try {
+            biblioteca.devolverLibro(prestamoSeleccionado.getLibro());
+        } catch (LibroNoPrestadoException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-
-        prestamoSeleccionado.registrarFechaDevolucion(new GregorianCalendar());
 
         mostrarAlerta("Éxito", "Préstamo finalizado correctamente.", Alert.AlertType.INFORMATION);
         stage.close();
@@ -124,16 +142,15 @@ public class DescripcionPrestamoController extends Controller {
      */
     @FXML
     private void handleEliminarPrestamo() {
-        // 1. Pedir confirmación
+        // Confirmacion
         Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
         confirmAlert.setTitle("Confirmar Eliminación");
         confirmAlert.setHeaderText("¿Está seguro de que desea eliminar este registro de préstamo?");
         confirmAlert.setContentText("Esto eliminará el préstamo del historial del socio y del libro.\nEsta acción no se puede deshacer.");
-
         Optional<ButtonType> result = confirmAlert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
 
-            // 2. Llamar a un nuevo método en Biblioteca para eliminar
+        //Elimina
+        if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
                 biblioteca.eliminarPrestamo(prestamoSeleccionado);
                 mostrarAlerta("Éxito", "Préstamo eliminado correctamente.", Alert.AlertType.INFORMATION);
