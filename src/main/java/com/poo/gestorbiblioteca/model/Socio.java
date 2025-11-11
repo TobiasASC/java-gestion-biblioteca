@@ -114,11 +114,13 @@ public abstract class Socio implements Serializable {
     public boolean puedePedir() {
         Calendar hoy = new GregorianCalendar();
         boolean puede = true;
-
-        for(int i = 0; i < this.getPrestamos().size(); ++i) {
-            puede = puede && ((Prestamo)this.getPrestamos().get(i)).vencido(hoy);
+        for (Prestamo prestamo : this.getPrestamos()) {
+            if (prestamo.getFechaDevolucion() == null) {
+                if (prestamo.vencido(hoy)) {
+                    return false;
+                }
+            }
         }
-
         return puede;
     }
 

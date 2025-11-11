@@ -31,7 +31,9 @@ public class FormularioPrestamoController {
 
     @FXML
     private void initialize() {
+
         fechaDatePicker.setValue(LocalDate.now());
+        fechaDatePicker.setShowWeekNumbers(false);
     }
 
     /**
