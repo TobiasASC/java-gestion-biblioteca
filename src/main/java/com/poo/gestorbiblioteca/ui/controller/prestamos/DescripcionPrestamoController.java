@@ -3,7 +3,7 @@ package com.poo.gestorbiblioteca.ui.controller.prestamos;
 import com.poo.gestorbiblioteca.core.Biblioteca;
 import com.poo.gestorbiblioteca.exception.LibroNoPrestadoException;
 import com.poo.gestorbiblioteca.model.*;
-import com.poo.gestorbiblioteca.ui.controller.Controller;
+import com.poo.gestorbiblioteca.utils.Alerta;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -13,10 +13,11 @@ import javafx.stage.Stage;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.Optional;
 
-public class DescripcionPrestamoController extends Controller {
+import static com.poo.gestorbiblioteca.utils.Alerta.mostrarAlerta;
+
+public class DescripcionPrestamoController {
 
     @FXML private Label estadoLabel;
     @FXML private Label fechaRetiroLabel;

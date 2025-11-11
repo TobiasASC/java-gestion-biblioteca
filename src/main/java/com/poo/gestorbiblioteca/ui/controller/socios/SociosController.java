@@ -4,7 +4,8 @@ import com.poo.gestorbiblioteca.core.Biblioteca;
 import com.poo.gestorbiblioteca.model.Docente;
 import com.poo.gestorbiblioteca.model.Estudiante;
 import com.poo.gestorbiblioteca.model.Socio;
-import com.poo.gestorbiblioteca.ui.controller.Controller;
+import com.poo.gestorbiblioteca.utils.Alerta;
+import com.poo.gestorbiblioteca.utils.StringNormalizador;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -25,7 +26,9 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class SociosController extends Controller {
+import static com.poo.gestorbiblioteca.utils.Alerta.mostrarAlerta;
+
+public class SociosController {
 
     @FXML private TableView<Socio> tablaSocios;
     @FXML private TableColumn<Socio, Integer> colSocioDNI;
@@ -102,23 +105,30 @@ public class SociosController extends Controller {
                     return true;
                 }
 
-                String filtroMinusculas = newValue.toLowerCase();
+                String filtroNormalizado = StringNormalizador.normalizarTexto(newValue);
 
-                if (socio.getNombre().toLowerCase().contains(filtroMinusculas)) {
+                if (StringNormalizador.normalizarTexto(socio.getNombre())
+                        .contains(filtroNormalizado)) {
                     return true;
                 }
-                else if (String.valueOf(socio.getDniSocio()).contains(filtroMinusculas)) {
+
+                else if (String.valueOf(socio.getDniSocio()).contains(filtroNormalizado)) {
                     return true;
                 }
-                else if (socio.soyDeLaClase().toLowerCase().contains(filtroMinusculas)) {
+
+                else if (StringNormalizador.normalizarTexto(socio.soyDeLaClase())
+                        .contains(filtroNormalizado)) {
                     return true;
                 }
+
                 else if (socio instanceof Docente) {
-                    if (((Docente) socio).getArea().toLowerCase().contains(filtroMinusculas)) {
+                    if (StringNormalizador.normalizarTexto(((Docente) socio).getArea())
+                            .contains(filtroNormalizado)) {
                         return true;
                     }
                 } else if (socio instanceof Estudiante) {
-                    if (((Estudiante) socio).getCarrera().toLowerCase().contains(filtroMinusculas)) {
+                    if (StringNormalizador.normalizarTexto(((Estudiante) socio).getCarrera())
+                            .contains(filtroNormalizado)) {
                         return true;
                     }
                 }

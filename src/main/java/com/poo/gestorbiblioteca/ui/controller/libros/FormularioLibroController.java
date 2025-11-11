@@ -1,14 +1,16 @@
 package com.poo.gestorbiblioteca.ui.controller.libros;
 
 import com.poo.gestorbiblioteca.core.Biblioteca;
-import com.poo.gestorbiblioteca.ui.controller.Controller;
+import com.poo.gestorbiblioteca.utils.Alerta;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-public class FormularioLibroController extends Controller {
+import static com.poo.gestorbiblioteca.utils.Alerta.mostrarAlerta;
+
+public class FormularioLibroController {
 
     @FXML private TextField tituloTextField;
     @FXML private TextField edicionTextField;

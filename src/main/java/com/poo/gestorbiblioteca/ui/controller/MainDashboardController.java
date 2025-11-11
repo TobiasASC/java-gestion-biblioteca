@@ -138,6 +138,7 @@ public class MainDashboardController {
         alert.setHeaderText("Gestor de Biblioteca v1.0");
         alert.setContentText("""
             Proyecto final de Programación Orientada a Objetos.
+            
             Desarrollado por:
             - Fernández, Pablo
             - Kruzolek, Lucas
@@ -145,13 +146,18 @@ public class MainDashboardController {
             - Rojas, Marcos Agustín
             - Sanchez Cueba, Tobías
             - Santoro Sandoval, Lionel
+            
+            
+            ********* Código disponible en: *********
+            github.com/lucaskruzolek/gestor-biblioteca
+            
             """
                 );
         alert.showAndWait();
     }
 
     /**
-     * Método helper reutilizable para abrir cualquier popup de reporte.
+     * Metodo helper reutilizable para abrir cualquier popup de reporte.
      */
     private void abrirVentanaReporte(String titulo, String contenido) {
         try {

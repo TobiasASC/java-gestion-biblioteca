@@ -4,6 +4,7 @@ import com.poo.gestorbiblioteca.exception.LibroNoPrestadoException;
 import com.poo.gestorbiblioteca.model.*;
 import com.poo.gestorbiblioteca.persistence.DatosPersistidos;
 import com.poo.gestorbiblioteca.persistence.ObjectStreamPersistenceService;
+import com.poo.gestorbiblioteca.utils.PobladoraDatos;
 
 
 import java.io.File;
@@ -17,10 +18,11 @@ public class Biblioteca {
     private String nombre;
     private ArrayList<Socio> socios;
     private ArrayList<Libro> libros;
-    private ObjectStreamPersistenceService persistenceService;
-    private static final String USER_HOME = System.getProperty("user.home");
-    private static final String ARCHIVO_DATOS = USER_HOME + File.separator + "biblioteca.dat";
-
+    private ObjectStreamPersistenceService servicioPersistencia;
+    private static final String APP_DATA_PATH = System.getenv("APPDATA");
+    private static final String APP_FOLDER_NAME = "gestor-biblioteca";
+    private static final String DATA_FOLDER_PATH = APP_DATA_PATH + File.separator + APP_FOLDER_NAME;
+    private static final String ARCHIVO_DATOS = DATA_FOLDER_PATH + File.separator + "biblioteca.dat";
 
     /**
      * Constructor de Biblioteca.
@@ -31,11 +33,9 @@ public class Biblioteca {
         this.setNombre(p_nombre);
         this.setSocios(new ArrayList<>());
         this.setLibros(new ArrayList<>());
-
-        this.persistenceService = new ObjectStreamPersistenceService(ARCHIVO_DATOS);
+        this.servicioPersistencia = new ObjectStreamPersistenceService(ARCHIVO_DATOS);
 
         this.cargarDatosDesdeServicio(this);
-
     }
 
     /**
@@ -396,32 +396,46 @@ public class Biblioteca {
     }
 
 
-    //Metodos de Persistencia
+    // Metodos de Persistencia
     private void cargarDatosDesdeServicio(Biblioteca biblioteca) {
+        this.crearDirectorioDeDatos();
+        DatosPersistidos datosCargados = null;
+        // Intenta Cargar los datos
         try {
-            // Le pide al servicio que cargue los datos
-            DatosPersistidos datos = persistenceService.cargarDatos(biblioteca);
-            this.setSocios(datos.getSocios());
-            this.setLibros(datos.getLibros());
-
+            datosCargados = this.servicioPersistencia.cargarDatos();
         } catch (IOException | ClassNotFoundException e) {
-            System.err.println("ERROR FATAL AL CARGAR DATOS. No se pudo leer " + ARCHIVO_DATOS);
-            e.printStackTrace();
-           // Si falla la carga se inicializan los atributos con listas vacías para evitar un crash.
-            this.setSocios(new ArrayList<>());
-            this.setLibros(new ArrayList<>());
+            System.err.println("Error al leer biblioteca.dat, se crearán nuevos datos. Error: " + e.getMessage());
+            datosCargados = new DatosPersistidos(); // Asegura que no sea nulo en caso de error
         }
+
+        //PobladoraDatos.poblar(this);
+
+            System.out.println("Datos cargados desde " + ARCHIVO_DATOS);
+            this.socios = datosCargados.socios;
+            this.libros = datosCargados.libros;
     }
 
     public void guardarDatosEnArchivo() {
         try {
             DatosPersistidos datosActuales = new DatosPersistidos(this.getSocios(), this.getLibros());
-            persistenceService.guardarDatos(datosActuales);
+            this.servicioPersistencia.guardarDatos(datosActuales);
             System.out.println("Datos guardados.");
 
         } catch (IOException e) {
             System.err.println("ERROR: No se pudieron guardar los datos en " + ARCHIVO_DATOS);
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Verifica si la carpeta de datos (ej. .../AppData/Roaming/gestor-biblioteca)
+     * existe, y si no, la crea.
+     */
+    private void crearDirectorioDeDatos() {
+        File dataDir = new File(DATA_FOLDER_PATH);
+        if (!dataDir.exists()) {
+            System.out.println("Creando directorio de datos en: " + DATA_FOLDER_PATH);
+            dataDir.mkdir();
         }
     }
 

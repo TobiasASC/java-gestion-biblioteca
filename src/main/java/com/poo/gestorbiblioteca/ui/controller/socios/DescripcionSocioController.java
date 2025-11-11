@@ -5,7 +5,7 @@ import com.poo.gestorbiblioteca.model.Docente;
 import com.poo.gestorbiblioteca.model.Estudiante;
 import com.poo.gestorbiblioteca.model.Prestamo;
 import com.poo.gestorbiblioteca.model.Socio;
-import com.poo.gestorbiblioteca.ui.controller.Controller;
+import com.poo.gestorbiblioteca.utils.Alerta;
 import com.poo.gestorbiblioteca.ui.controller.prestamos.DescripcionPrestamoController;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -14,13 +14,16 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.Optional;
 
-public class DescripcionSocioController extends Controller {
+import static com.poo.gestorbiblioteca.utils.Alerta.mostrarAlerta;
+
+public class DescripcionSocioController {
 
     @FXML private Label dniLabel;
     @FXML private Label nombreLabel;
@@ -50,45 +53,34 @@ public class DescripcionSocioController extends Controller {
         this.setListenerTablaHistorial();
     }
 
-    private void configurarColumnas() {
-        colHistorialLibro.setCellValueFactory(cellData -> {
-            if (cellData.getValue().getLibro() != null) {
-                return new SimpleStringProperty(cellData.getValue().getLibro().getTitulo());
-            }
-            return new SimpleStringProperty("Libro no disponible");
-        });
-
-        colHistorialEstado.setCellValueFactory(cellData ->
-                new SimpleStringProperty(cellData.getValue().estado())
-        );
-    }
-
-    private void setListenerTablaHistorial(){
-        tablaHistorial.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2 && !tablaHistorial.getSelectionModel().isEmpty()) {
-                this.handleVerDescripcionPrestamo();
-            }
-        });
-    }
-
+    /**
+     * Recibe la lógica de negocio.
+     */
     public void setBiblioteca(Biblioteca biblioteca) {
         this.biblioteca = biblioteca;
     }
 
+    /**
+     * Recibe el Stage.
+     */
     public void setStage(Stage stage) {
         this.stage = stage;
     }
 
     /**
-     * Recibe el Socio seleccionado y puebla todos los campos de la vista de detalles.
+     * Recibe el socio a mostrar
+     * Puebla los campos de la descripcion.
      */
     public void setSocio(Socio socio) {
         this.socioSeleccionado = socio;
-        this.cargarDescripcion(socio);
+        this.poblarCamposSocio(socio);
         this.cargarHistorial(socio);
     }
 
-    private void cargarDescripcion(Socio socio){
+    /**
+     * Puebla los campos de la descripcion con los datos del libro seleccionado.
+     */
+    private void poblarCamposSocio(Socio socio){
         dniLabel.setText(String.valueOf(socio.getDniSocio()));
         nombreLabel.setText(socio.getNombre());
         tipoLabel.setText(socio.soyDeLaClase());
@@ -104,23 +96,99 @@ public class DescripcionSocioController extends Controller {
             areaCarreraLabel.setVisible(false);
         }
     }
+
+    /**
+     * Define el data binding
+     */
+    private void configurarColumnas() {
+        colHistorialLibro.setCellValueFactory(cellData -> {
+            if (cellData.getValue().getLibro() != null) {
+                return new SimpleStringProperty(cellData.getValue().getLibro().getTitulo());
+            }
+            return new SimpleStringProperty("Libro no disponible");
+        });
+
+        colHistorialEstado.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().estado())
+        );
+    }
+
+    /**
+     * Carga el historal de prestamos del socio
+     */
     private void cargarHistorial(Socio socio){
         if (socio.getPrestamos() != null) {
             tablaHistorial.setItems(FXCollections.observableArrayList(socio.getPrestamos()));
         }
     }
+
+    /**
+     * Registra el manejador de eventos
+     */
+    private void setListenerTablaHistorial(){
+        tablaHistorial.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2 && !tablaHistorial.getSelectionModel().isEmpty()) {
+                this.handleVerDescripcionPrestamo();
+            }
+        });
+    }
+
+    /**
+     * Obtiene el Prestamo seleccionado y llama al metodo abrirVentanaDescripcion
+     */
+    private void handleVerDescripcionPrestamo(){
+        Prestamo prestamoSeleccionado = tablaHistorial.getSelectionModel().getSelectedItem();
+
+        if (prestamoSeleccionado == null) {
+            return;
+        }
+        this.abrirVentanaDescripcion(prestamoSeleccionado);
+    }
+
+    /**
+     * Orquesta la apertura del popup
+     */
+    private void abrirVentanaDescripcion(Prestamo prestamo) {
+        try {
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/poo/gestorbiblioteca/ui/prestamos/DescripcionPrestamo.fxml"));
+            Parent root = loader.load();
+
+            Stage popupStage = new Stage();
+            popupStage.setTitle("Expediente del Préstamo");
+            popupStage.setScene(new Scene(root));
+            popupStage.initModality(Modality.APPLICATION_MODAL);
+            popupStage.initOwner(this.stage);
+            Image appIcon = new Image(getClass().getResourceAsStream("/com/poo/gestorbiblioteca/ui/images/prestamo-icon.png"));
+            popupStage.getIcons().add(appIcon);
+
+            DescripcionPrestamoController controller = loader.getController();
+
+            controller.setStage(popupStage);
+            controller.setBiblioteca(this.biblioteca);
+            controller.setPrestamo(prestamo); // ¡Este es el paso clave!
+
+            popupStage.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            mostrarAlerta("Error", "No se pudo abrir la ventana de descripción: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
     /**
      * Maneja el clic en el botón "Eliminar".
      */
     @FXML
     private void handleEliminarSocio() {
-        // 1. Pide confirmación
+        //Confirmación
         Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
         confirmAlert.setTitle("Confirmar Eliminación");
         confirmAlert.setHeaderText("¿Está seguro de que desea eliminar este socio?");
         confirmAlert.setContentText("Socio: " + socioSeleccionado.getNombre() + "\nEsta acción no se puede deshacer.");
-
         Optional<ButtonType> result = confirmAlert.showAndWait();
+
+        // Elimina
         if (result.isPresent() && result.get() == ButtonType.OK) {
 
             try {
@@ -133,44 +201,12 @@ public class DescripcionSocioController extends Controller {
         }
     }
 
+    /**
+     * Maneja el clic en el botón "Cerrar".
+     */
     @FXML
     private void handleCerrar() {
         stage.close();
-    }
-
-    private void handleVerDescripcionPrestamo(){
-        Prestamo prestamoSeleccionado = tablaHistorial.getSelectionModel().getSelectedItem();
-
-        if (prestamoSeleccionado == null) {
-            return;
-        }
-        this.abrirVentanaDescripcion(prestamoSeleccionado);
-    }
-
-    private void abrirVentanaDescripcion(Prestamo prestamo) {
-        try {
-
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/poo/gestorbiblioteca/ui/prestamos/DescripcionPrestamo.fxml"));
-            Parent root = loader.load();
-
-            Stage newStage = new Stage();
-            newStage.setTitle("Descripción del Préstamo");
-            newStage.setScene(new Scene(root));
-            newStage.initModality(Modality.APPLICATION_MODAL);
-            newStage.initOwner(this.stage);
-
-            DescripcionPrestamoController controller = loader.getController();
-
-            controller.setStage(newStage);
-            controller.setBiblioteca(this.biblioteca);
-            controller.setPrestamo(prestamo); // ¡Este es el paso clave!
-
-            newStage.showAndWait();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            mostrarAlerta("Error", "No se pudo abrir la ventana de descripción: " + e.getMessage(), Alert.AlertType.ERROR);
-        }
     }
 
 }

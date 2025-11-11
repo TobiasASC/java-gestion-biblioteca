@@ -11,7 +11,8 @@ import java.util.GregorianCalendar;
 import java.util.Random;
 
 /**
- * Clase de utilidad para poblar la biblioteca
+ * Clase de utilidad para poblar la biblioteca. Para poblarla hay que descomentar el llamado
+ * a esta clase en la clase Biblioteca, en su metodo cargarDatosDesdeServicio.
  */
 public final class PobladoraDatos {
 
@@ -129,9 +130,6 @@ public final class PobladoraDatos {
     private static final String[] CARRERAS = {"Ing. en Sistemas", "Medicina", "Derecho", "Arquitectura", "Biología", "Letras"};
     private static final String[] AREAS = {"Matemática", "Física", "Química", "Historia", "Lengua", "Computación"};
 
-    // Un DNI base para asegurar unicidad
-    private static int dniBase = 20000000;
-
     /**
      * Método público principal. Llama a los métodos privados en orden.
      */
@@ -147,10 +145,31 @@ public final class PobladoraDatos {
      */
     private static void crearSocios(Biblioteca biblioteca, int cantidad) {
         System.out.println("Poblando " + cantidad + " socios...");
+
+        // --- Rango de DNI ---
+        int minDNI = 20000000;
+        int maxDNI = 42000000;
+
+        // El "límite" (bound) para nextInt es (max - min)
+        int bound = maxDNI - minDNI;
+        // ---
+
         for (int i = 0; i < cantidad; i++) {
             String nombre = NOMBRES[rand.nextInt(NOMBRES.length)];
             String apellido = APELLIDOS[rand.nextInt(APELLIDOS.length)];
-            int dni = dniBase++; // Asegura DNI único
+
+            // --- ¡LÓGICA DE DNI ALEATORIO! ---
+            // 1. Genera un número aleatorio entre 0 y (bound-1)
+            int randomOffset = rand.nextInt(bound);
+            // 2. Le suma el valor mínimo para ponerlo en el rango correcto
+            int dni = minDNI + randomOffset;
+            // ---
+
+            // (Opcional: Comprobar si este DNI aleatorio ya existe)
+            if (biblioteca.buscarSocio(dni) != null) {
+                 i--; // Si ya existe, re-intenta el bucle
+                 continue;
+             }
 
             // 50% de probabilidad de ser Estudiante o Docente
             if (rand.nextBoolean()) {

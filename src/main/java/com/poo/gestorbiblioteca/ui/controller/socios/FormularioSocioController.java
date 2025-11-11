@@ -2,12 +2,14 @@ package com.poo.gestorbiblioteca.ui.controller.socios;
 
 import com.poo.gestorbiblioteca.core.Biblioteca;
 import com.poo.gestorbiblioteca.model.Socio;
-import com.poo.gestorbiblioteca.ui.controller.Controller;
+import com.poo.gestorbiblioteca.utils.Alerta;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
-public class FormularioSocioController extends Controller {
+import static com.poo.gestorbiblioteca.utils.Alerta.mostrarAlerta;
+
+public class FormularioSocioController {
 
     @FXML private TextField dniTextField;
     @FXML private TextField nombreTextField;

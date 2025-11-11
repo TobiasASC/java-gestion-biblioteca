@@ -1,12 +1,12 @@
 package com.poo.gestorbiblioteca.ui.controller.reporte;
 
-import com.poo.gestorbiblioteca.ui.controller.Controller;
+import com.poo.gestorbiblioteca.utils.Alerta;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 
-public class ReporteController extends Controller {
+public class ReporteController {
 
     @FXML
     private Label tituloReporteLabel;

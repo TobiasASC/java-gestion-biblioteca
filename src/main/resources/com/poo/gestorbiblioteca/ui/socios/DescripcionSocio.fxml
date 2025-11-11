@@ -85,13 +85,16 @@
             </children>
         </HBox>
 
-        <Label text="Historial de Préstamos:">
+        <Label alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="20.0" prefWidth="420.0" text="Historial de Préstamos">
             <font>
                 <Font name="System Bold" size="14.0" />
             </font>
+            <VBox.margin>
+                <Insets bottom="-10.0" />
+            </VBox.margin>
         </Label>
 
-        <TableView fx:id="tablaHistorial" VBox.vgrow="ALWAYS">
+        <TableView fx:id="tablaHistorial" prefHeight="293.0" prefWidth="420.0" VBox.vgrow="ALWAYS">
             <columnResizePolicy>
                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
             </columnResizePolicy>

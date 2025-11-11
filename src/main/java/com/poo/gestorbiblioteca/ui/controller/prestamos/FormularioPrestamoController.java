@@ -3,7 +3,7 @@ package com.poo.gestorbiblioteca.ui.controller.prestamos;
 import com.poo.gestorbiblioteca.core.Biblioteca;
 import com.poo.gestorbiblioteca.model.Libro;
 import com.poo.gestorbiblioteca.model.Socio;
-import com.poo.gestorbiblioteca.ui.controller.Controller;
+import com.poo.gestorbiblioteca.utils.Alerta;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -16,8 +16,10 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.GregorianCalendar;
 
+import static com.poo.gestorbiblioteca.utils.Alerta.mostrarAlerta;
 
-public class FormularioPrestamoController extends Controller {
+
+public class FormularioPrestamoController {
 
     @FXML private SearchableComboBox<Socio> socioComboBox;
     @FXML private SearchableComboBox<Libro> libroComboBox;

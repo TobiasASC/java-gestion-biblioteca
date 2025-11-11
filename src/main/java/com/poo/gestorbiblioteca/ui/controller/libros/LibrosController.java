@@ -3,7 +3,8 @@ package com.poo.gestorbiblioteca.ui.controller.libros;
 import com.poo.gestorbiblioteca.exception.LibroNoPrestadoException;
 import com.poo.gestorbiblioteca.core.Biblioteca;
 import com.poo.gestorbiblioteca.model.Libro;
-import com.poo.gestorbiblioteca.ui.controller.Controller;
+import com.poo.gestorbiblioteca.utils.Alerta;
+import com.poo.gestorbiblioteca.utils.StringNormalizador;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -26,7 +27,9 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class LibrosController extends Controller {
+import static com.poo.gestorbiblioteca.utils.Alerta.mostrarAlerta;
+
+public class LibrosController {
 
     @FXML private TableView<Libro> tablaLibros;
     @FXML private TableColumn<Libro, String> colLibroTitulo;
@@ -102,13 +105,19 @@ public class LibrosController extends Controller {
                     return true;
                 }
 
-                String filtroMinusculas = newValue.toLowerCase();
+                String filtroNormalizado = StringNormalizador.normalizarTexto(newValue);
 
-                if (libro.getTitulo().toLowerCase().contains(filtroMinusculas)) {
+                if (StringNormalizador.normalizarTexto(libro.getTitulo())
+                        .contains(filtroNormalizado)) {
                     return true;
-                } else if (libro.getEditorial().toLowerCase().contains(filtroMinusculas)) {
+                }
+
+                else if (StringNormalizador.normalizarTexto(libro.getEditorial())
+                        .contains(filtroNormalizado)) {
                     return true;
-                } else if (String.valueOf(libro.getAnio()).contains(filtroMinusculas)) {
+                }
+
+                else if (String.valueOf(libro.getAnio()).contains(filtroNormalizado)) {
                     return true;
                 }
 

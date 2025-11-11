@@ -57,37 +57,32 @@
                     <release>21</release>
                 </configuration>
             </plugin>
-
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.5.1</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.poo.gestorbiblioteca.ui.Launcher</mainClass>
-                                </transformer>
-                            </transformers>
-                            <filters>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>module-info.class</exclude>
-                                        <exclude>META-INF/*.SF</exclude>
-                                        <exclude>META-INF/*.DSA</exclude>
-                                        <exclude>META-INF/*.RSA</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
-                        </configuration>
-                    </execution>
-                </executions>
+                <groupId>io.github.fvarrui</groupId>
+                <artifactId>javapackager</artifactId>
+                <version>1.7.2</version> <executions>
+                <execution>
+                    <phase>package</phase> <goals>
+                    <goal>package</goal>
+                </goals>
+                    <configuration>
+                        <mainClass>com.poo.gestorbiblioteca.ui.Launcher</mainClass>
+
+                        <bundleJre>true</bundleJre>
+                        <customizedJre>true</customizedJre>
+
+                        <generateInstaller>true</generateInstaller>
+                        <platform>windows</platform>
+
+                        <displayName>Gestor de Biblioteca</displayName>
+                        <organizationName>POO Project</organizationName>
+
+                        <winConfig>
+                            <icoFile>src/main/resources/com/poo/gestorbiblioteca/ui/assets/icon.ico</icoFile>
+                        </winConfig>
+                    </configuration>
+                </execution>
+            </executions>
             </plugin>
         </plugins>
     </build>

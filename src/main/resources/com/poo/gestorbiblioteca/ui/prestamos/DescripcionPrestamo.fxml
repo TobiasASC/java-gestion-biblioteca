@@ -16,10 +16,13 @@
     </padding>
     <children>
 
-        <Label text="Estado del Préstamo">
+        <Label alignment="CENTER" maxWidth="1.7976931348623157E308" text="Estado del Préstamo">
             <font>
                 <Font name="System Bold" size="14.0" />
             </font>
+            <VBox.margin>
+                <Insets bottom="-10.0" />
+            </VBox.margin>
         </Label>
         <GridPane hgap="10.0">
             <columnConstraints>
@@ -47,10 +50,13 @@
             </children>
         </GridPane>
 
-        <Label text="Información del Socio">
+        <Label alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="20.0" prefWidth="195.0" text="Información del Socio">
             <font>
                 <Font name="System Bold" size="14.0" />
             </font>
+            <VBox.margin>
+                <Insets bottom="-10.0" />
+            </VBox.margin>
         </Label>
         <GridPane hgap="10.0">
             <columnConstraints>
@@ -78,10 +84,13 @@
             </children>
         </GridPane>
 
-        <Label text="Información del Libro">
+        <Label alignment="CENTER" maxWidth="1.7976931348623157E308" text="Información del Libro">
             <font>
                 <Font name="System Bold" size="14.0" />
             </font>
+            <VBox.margin>
+                <Insets bottom="-10.0" />
+            </VBox.margin>
         </Label>
         <GridPane hgap="10.0">
             <columnConstraints>

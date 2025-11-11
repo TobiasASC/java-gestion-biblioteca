@@ -4,7 +4,8 @@ import com.poo.gestorbiblioteca.core.Biblioteca;
 import com.poo.gestorbiblioteca.model.Libro;
 import com.poo.gestorbiblioteca.model.Prestamo;
 import com.poo.gestorbiblioteca.model.Socio;
-import com.poo.gestorbiblioteca.ui.controller.Controller;
+import com.poo.gestorbiblioteca.utils.Alerta;
+import com.poo.gestorbiblioteca.utils.StringNormalizador;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -29,7 +30,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class PrestamosController extends Controller {
+import static com.poo.gestorbiblioteca.utils.Alerta.mostrarAlerta;
+
+public class PrestamosController {
 
     @FXML private TableView<Prestamo> tablaPrestamos;
     @FXML private TableColumn<Prestamo, String> colPrestamoLibro;
@@ -121,27 +124,32 @@ public class PrestamosController extends Controller {
                     return true;
                 }
 
-                String filtroMinusculas = newValue.toLowerCase();
+                String filtroNormalizado = StringNormalizador.normalizarTexto(newValue);
 
                 if (prestamo.getLibro() != null &&
-                        prestamo.getLibro().getTitulo().toLowerCase().contains(filtroMinusculas)) {
+                        StringNormalizador.normalizarTexto(prestamo.getLibro().getTitulo())
+                                .contains(filtroNormalizado)) {
                     return true;
                 }
 
                 else if (prestamo.getSocio() != null &&
-                        prestamo.getSocio().getNombre().toLowerCase().contains(filtroMinusculas)) {
+                        StringNormalizador.normalizarTexto(prestamo.getSocio().getNombre())
+                                .contains(filtroNormalizado)) {
                     return true;
                 }
-                else if (prestamo.estado().toLowerCase().contains(filtroMinusculas)) {
+
+                else if (StringNormalizador.normalizarTexto(prestamo.estado())
+                        .contains(filtroNormalizado)) {
                     return true;
                 }
+
                 else if (prestamo.getFechaRetiro() != null &&
-                        dateFormat.format(prestamo.getFechaRetiro().getTime()).contains(filtroMinusculas)) {
+                        dateFormat.format(prestamo.getFechaRetiro().getTime())
+                                .contains(filtroNormalizado)) {
                     return true;
                 }
-
                 else if (prestamo.getSocio() != null &&
-                        String.valueOf(prestamo.getSocio().getDniSocio()).contains(filtroMinusculas)){
+                        String.valueOf(prestamo.getSocio().getDniSocio()).contains(filtroNormalizado)){
                     return true;
                 }
 
@@ -228,7 +236,7 @@ public class PrestamosController extends Controller {
 
         } catch (IOException e) {
             e.printStackTrace();
-            super.mostrarAlerta("Error", "No se pudo cargar la vista de detalles.", Alert.AlertType.ERROR);
+            Alerta.mostrarAlerta("Error", "No se pudo cargar la vista de detalles.", Alert.AlertType.ERROR);
         }
     }
 
